@@ -30,7 +30,6 @@ bun lint:fix
 bun format
 ```
 
-
 ## ビルドバリアント
 
 `APP_VARIANT`環境変数で切り替える

@@ -1,0 +1,55 @@
+# .mise.local.toml に書く
+# [env]
+# EXPO_TOKEN = ""
+# EXPO_APPLE_ID = ""
+# DEVICE_ID = ""
+# PROJECT_ID = ""
+
+[tasks.LOCAL-build-local]
+description = "local"
+run = """
+mkdir -p build
+eas build --platform ios --profile local --local
+LATEST_IPA=$(ls -t ./*.ipa 2>/dev/null | head -n 1)
+BASENAME=$(basename "$LATEST_IPA" .ipa)
+mv "$LATEST_IPA" "./build/${BASENAME}-local.ipa"
+"""
+
+[tasks.LOCAL-build-staging]
+description = "staging"
+run = """
+mkdir -p build
+eas build --platform ios --profile staging --local
+LATEST_IPA=$(ls -t ./*.ipa 2>/dev/null | head -n 1)
+BASENAME=$(basename "$LATEST_IPA" .ipa)
+mv "$LATEST_IPA" "./build/${BASENAME}-staging.ipa"
+"""
+
+[tasks.LOCAL-build-production]
+description = "production"
+run = """
+mkdir -p build
+eas build --platform ios --profile production --local
+LATEST_IPA=$(ls -t ./*.ipa 2>/dev/null | head -n 1)
+BASENAME=$(basename "$LATEST_IPA" .ipa)
+mv "$LATEST_IPA" "./build/${BASENAME}-production.ipa"
+"""
+
+[tasks.install-ios-ipad-real]
+description = "実機にアプリをインストール"
+run = """
+ls -lt build/*.ipa \
+ | awk '{print $6, $7, $8, $9}' \
+ | fzf --header="Select IPA file to install" --no-select-1 \
+ | awk '{print $4}' \
+ | xargs -I {} \
+     xcrun devicectl device install app \
+       --device $DEVICE_ID {}
+"""
+
+[tasks.get-device-id]
+description = "DEVICE_IDの取得"
+run = """
+echo "インストールしたい端末の Identifier を環境変数 DEVICE_ID として設定してください"
+xcrun devicectl list devices
+"""

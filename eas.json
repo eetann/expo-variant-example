@@ -1,0 +1,22 @@
+{
+  "build": {
+    "local": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "local"
+      }
+    },
+    "staging": {
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "staging"
+      }
+    },
+    "production": {
+      "env": {
+        "APP_VARIANT": "production"
+      }
+    }
+  }
+}
